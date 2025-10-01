@@ -8,7 +8,7 @@ AIRPORTS = {
              "healing": 19.00, "time_factor": 0.50},
     "DNMM": {"name": "Murtala Muhammed Intl Airport (Lagos)", "continent": 3, "risk_factor": 1, "clinic": 0,
              "healing": None, "time_factor": None},
-    # ... (add all other airports in the same format)
+    
     "ZSPD": {"name": "Shanghai Pudong Intl Airport", "continent": 1, "risk_factor": 1, "clinic": 1, "healing": 22.00,
              "time_factor": 0.65}
 }
@@ -18,7 +18,7 @@ CONNECTIONS = [
     {"id": 1, "from": "OTHH", "to": "VIDP", "time": 225, "health_cost": 0.05},
     {"id": 2, "from": "VIDP", "to": "OTHH", "time": 240, "health_cost": 0.05},
     {"id": 3, "from": "OTHH", "to": "WSSS", "time": 430, "health_cost": 0.05},
-    # ... (add all other connections in the same format)
+    
     {"id": 108, "from": "NZAA", "to": "PHNL", "time": 480, "health_cost": 0.05}
 ]
 
@@ -55,4 +55,5 @@ def initialize_game():
 
 start, target = initialize_game()
 print(f"Start Location: {AIRPORTS[start]['name']} ({start})")
+
 print(f"Target Hospital: {AIRPORTS[target]['name']} ({target})")
