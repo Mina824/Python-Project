@@ -1,0 +1,86 @@
+def handle_healing():
+
+    global current_health, total_time_minutes, current_location
+
+    airport = airports[current_location]
+
+    if not airport['Clinic']:
+        print("❌ No clinic available at this airport.")
+        return
+
+    healing_amount = airport.get('Healing Amount', 0.0)
+    time_factor = airport.get('Time_Factor', 1.0)
+
+    time_cost = healing_time_factor * time_factor
+    total_time_minutes += time_cost
+
+    before_health = current_health
+    current_health = min(75.0, current_health + healing_amount)
+
+    print(f"🩺 Healing at {airport['Name']}...")
+    print(f"⏳ Time Spent: {time_cost} minutes")
+    print(f"❤️ Health Restored: {current_health - before_health:.2f} HP (Current: {current_health:.2f})")
+
+
+def execute_flight(flight):
+
+    global current_health, total_time_minutes, current_location
+
+    flight_time = flight['Time_Minutes']
+    health_loss = flight_time * health_cost_per_minute
+
+    total_time_minutes += flight_time
+    current_health -= health_loss
+    current_location = flight['Arrival_Airport_ID']
+
+    print(f"✈️ Flying from {flight['Departure_Airport_ID']} to {flight['Arrival_Airport_ID']}...")
+    print(f"⏳ Flight Time: {flight_time} minutes | ❤️ Health Loss: {health_loss:.2f} HP")
+    print(f"📍 Arrived at {airports[current_location]['Name']}")
+
+
+def present_options():
+
+    print("\nAvailable Actions:")
+    available_flights = []
+    option_number = 1
+
+    for connection in connections:
+        if connection['Departure_Airport_ID'] == current_location:
+            flight_time = connection['Time_Minutes']
+            health_cost = flight_time * health_cost_per_minute
+            dest = connection['Arrival_Airport_ID']
+            print(f"{option_number}. Fly to {airports[dest]['Name']} "
+                  f"({flight_time} min, -{health_cost:.2f} HP)")
+            available_flights.append(connection)
+            option_number += 1
+
+    if airports[current_location]['Clinic']:
+        print("H. Heal at the local clinic")
+
+    print("Q. Quit Mission")
+
+    return available_flights
+
+
+def handle_player_choice():
+    """Handles user input each turn: flight, heal, or quit."""
+    available_flights = present_options()
+    choice = input("\nChoose your action: ").strip().upper()
+
+    if choice == "Q":
+        print("👋 Mission Quited.")
+        sys.exit()
+
+    elif choice == "H":
+        handle_healing()
+
+    else:
+        try:
+            choice_num = int(choice)
+            if 1 <= choice_num <= len(available_flights):
+                flight = available_flights[choice_num - 1]
+                execute_flight(flight)
+            else:
+                print("❌ Invalid option. Try again.")
+        except ValueError:
+            print("❌ Invalid input. Enter a number, 'H', or 'Q'.")
